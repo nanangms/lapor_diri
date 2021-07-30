@@ -1,0 +1,330 @@
+@if(session('gagal'))
+                          <div class="alert alert-danger">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                            <i class="fa fa-warning"></i> {{session('gagal')}}
+                          </div>
+                        @endif  
+    <span class="text-danger">* Wajib</span>
+    <form action="/pendaftaran/kirim" class="form-horizontal" method="post">
+        {{csrf_field()}}
+        <div class="form-group{{$errors->has('nama') ? ' has-error':''}}">
+            <label class="col-md-3 col-xs-12 control-label">Nama Lengkap <span class="text-danger">*</span></label>
+            <div class="col-md-6 col-xs-12">                                            
+                <input type="text" class="form-control" name="nama" value="{{old('nama')}}"/>
+                <span class="text-info">- Nama lengkap sesuai KTP</span>
+                @if($errors->has('nama'))
+                    <span class="text-danger">{{$errors->first('nama')}}</span>
+                @endif
+            </div>
+        </div>
+
+        <div class="form-group{{$errors->has('nik') ? ' has-error':''}}">
+            <label class="col-md-3 col-xs-12 control-label">NIK <span class="text-danger">*</span></label>
+            <div class="col-md-6 col-xs-12">
+                <input type="text" class="form-control" name="nik" value="{{old('nik')}}"/>
+                @if($errors->has('nik'))
+                    <span class="text-danger">{{$errors->first('nik')}}</span><br>
+                @endif
+                <span class="text-info">- satu NIK hanya bisa mendaftar untuk satu registrasi</span>
+                
+            </div>
+        </div>
+
+        <div class="form-group{{$errors->has('email') ? ' has-error':''}}">
+            <label class="col-md-3 col-xs-12 control-label">Email <span class="text-danger">*</span></label>
+            <div class="col-md-6 col-xs-12">                                            
+                <input type="email" class="form-control" name="email" value="{{old('email')}}"/>
+                @if($errors->has('email'))
+                    <span class="text-danger">{{$errors->first('email')}}</span>
+                @endif
+            </div>
+        </div>
+        <div class="form-group{{$errors->has('lokasi') ? ' has-error':''}}">
+            <label class="col-md-3 col-xs-12 control-label">Tanggal Lahir <span class="text-danger">*</span></label>
+            <div class="col-md-6 col-xs-12">
+            
+                <div class="col-md-4">
+                    <select class="form-control select" name="tgl">
+                        <option value="">--Tanggal--</option>
+                        <?php for($a=1; $a<=31; $a+=1){ ?>
+                            <option value="{{$a}}" @if(old("tgl") == $a) selected @endif>{{$a}}</option>
+                        <?php } ?>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <select class="form-control select" name="bulan">
+                        <option value="">--Bulan--</option>
+                        <option value="01" @if(old("bulan") == '01') selected @endif>Januari</option>
+                        <option value="02" @if(old("bulan") == '02') selected @endif>Februari</option>
+                        <option value="03" @if(old("bulan") == '03') selected @endif>Maret</option>
+                        <option value="04" @if(old("bulan") == '04') selected @endif>April</option>
+                        <option value="05" @if(old("bulan") == '05') selected @endif>Mei</option>
+                        <option value="06" @if(old("bulan") == '06') selected @endif>Juni</option>
+                        <option value="07" @if(old("bulan") == '07') selected @endif>Juli</option>
+                        <option value="08" @if(old("bulan") == '08') selected @endif>Agustus</option>
+                        <option value="09" @if(old("bulan") == '09') selected @endif>September</option>
+                        <option value="10" @if(old("bulan") == '10') selected @endif>Oktober</option>
+                        <option value="11" @if(old("bulan") == '11') selected @endif>November</option>
+                        <option value="12" @if(old("bulan") == '12') selected @endif>Desember</option>
+                    </select>
+                </div>    
+                <div class="col-md-4">
+                    <select class="form-control select" name="tahun">
+                        <option value="">--Tahun--</option>
+                        <?php for($i=date('Y'); $i>=date('Y')-70; $i-=1){ ?>
+                        <option value="{{$i}}" @if(old("tahun") == $i) selected @endif>{{$i}}</option>
+                        <?php } ?>
+                    </select>
+
+                </div> 
+                @if($errors->has('tgl'))
+                    <span class="text-danger">{{$errors->first('tgl')}}</span>
+                @endif  
+                @if($errors->has('bulan'))
+                    <span class="text-danger">{{$errors->first('bulan')}}</span>
+                @endif  
+                @if($errors->has('tahun'))
+                    <span class="text-danger">{{$errors->first('tahun')}}</span>
+                @endif                       
+                
+                
+            </div>
+        </div>
+        <div class="form-group{{$errors->has('jenis_kelamin') ? ' has-error':''}}">
+            <label class="col-md-3 col-xs-12 control-label">Jenis Kelamin <span class="text-danger">*</span></label>
+            <div class="col-md-6 col-xs-12">                                            
+                <select name="jenis_kelamin" class="form-control select">
+                    <option value="">--Pilih--</option>
+                    <option value="Laki-laki" @if(old("jenis_kelamin") == 'Laki-laki') selected @endif>Laki-laki</option>
+                    <option value="Perempuan" @if(old("jenis_kelamin") == 'Perempuan') selected @endif>Perempuan</option>
+                </select>
+                @if($errors->has('jenis_kelamin'))
+                    <span class="text-danger">{{$errors->first('jenis_kelamin')}}</span>
+                @endif
+            </div>
+        </div>
+        <div class="form-group{{$errors->has('alamat_lengkap') ? ' has-error':''}}">
+            <label class="col-md-3 col-xs-12 control-label">Alamat Lengkap <span class="text-danger">*</span></label>
+            <div class="col-md-6 col-xs-12">                                            
+                <textarea class="form-control" name="alamat_lengkap">{{old('alamat_lengkap')}}</textarea>
+                @if($errors->has('alamat_lengkap'))
+                    <span class="text-danger">{{$errors->first('alamat_lengkap')}}</span>
+                @endif
+            </div>
+        </div>
+        <div class="form-group{{$errors->has('kota') ? ' has-error':''}}">
+            <label class="col-md-3 col-xs-12 control-label">Kota / Kabupaten<span class="text-danger">*</span></label>
+            <div class="col-md-6 col-xs-12">           
+                <select class="form-control select" name="kota">
+                    <option value="">--Pilih--</option>
+                    <option value="Kabupaten Kerinci" @if(old("kota") == 'Kabupaten Kerinci') selected @endif>Kabupaten Kerinci</option>
+                    <option value="Kabupaten Merangin" @if(old("kota") == 'Kabupaten Merangin') selected @endif>Kabupaten Merangin</option>
+                    <option value="Kabupaten Sarolangun" @if(old("kota") == 'Kabupaten Sarolangun') selected @endif>Kabupaten Sarolangun</option>
+                    <option value="Kabupaten Batanghari" @if(old("kota") == 'Kabupaten Batanghari') selected @endif>Kabupaten Batanghari</option>
+                    <option value="Kabupaten Muaro Jambi" @if(old("kota") == 'Kabupaten Muaro Jambi') selected @endif>Kabupaten Muaro Jambi</option>
+                    <option value="Kabupaten Tanjung Jabung Barat" @if(old("kota") == 'Kabupaten Tanjung Jabung Barat') selected @endif>Kabupaten Tanjung Jabung Barat</option>
+                    <option value="Kabupaten Tanjung Jabung Timur" @if(old("kota") == 'Kabupaten Tanjung Jabung Timur') selected @endif>Kabupaten Tanjung Jabung Timur</option>
+                    <option value="Kabupaten Bungo" @if(old("kota") == 'Kabupaten Bungo') selected @endif>Kabupaten Bungo</option>
+                    <option value="Kabupaten Tebo" @if(old("kota") == 'Kabupaten Tebo') selected @endif>Kabupaten Tebo</option>
+                    <option value="Kota Jambi" @if(old("kota") == 'Kota Jambi') selected @endif>Kota Jambi</option>
+                    <option value="Kota Sungai Penuh" @if(old("kota") == 'Kota Sungai Penuh') selected @endif>Kota Sungai Penuh</option>
+
+                </select>
+                @if($errors->has('kota'))
+                    <span class="text-danger">{{$errors->first('kota')}}</span>
+                @endif
+            </div>
+        </div>
+        <div class="form-group{{$errors->has('no_hp') ? ' has-error':''}}">
+            <label class="col-md-3 col-xs-12 control-label">No.Handphone/WA <span class="text-danger">*</span></label>
+            <div class="col-md-6 col-xs-12">                                            
+                <input type="text" class="form-control" name="no_hp" value="{{old('no_hp')}}"/>
+                @if($errors->has('no_hp'))
+                    <span class="text-danger">{{$errors->first('no_hp')}}</span>
+                @endif
+            </div>
+        </div>
+        <div class="form-group{{$errors->has('kategori') ? ' has-error':''}}">
+            <label class="col-md-3 col-xs-12 control-label">Kategori Jarak Tempuh <span class="text-danger">*</span></label>
+            <div class="col-md-6 col-xs-12">                                            
+                <select class="form-control select" name="kategori">
+                    <option value="">--Pilih--</option>
+                    <option value="08" @if(old("kategori") == '08') selected @endif>8 Km</option>
+                    <option value="17" @if(old("kategori") == '17') selected @endif>17 Km</option>
+                    <option value="45" @if(old("kategori") == '45') selected @endif>45 Km</option>
+                    <option value="75" @if(old("kategori") == '75') selected @endif>75 Km</option>
+                </select>
+                @if($errors->has('kategori'))
+                    <span class="text-danger">{{$errors->first('kategori')}}</span>
+                @endif
+            </div>
+        </div>
+        <div class="form-group{{$errors->has('lokasi') ? ' has-error':''}}">
+            <label class="col-md-3 col-xs-12 control-label">Akun Instagram</label>
+            <div class="col-md-6 col-xs-12">                                            
+                <input type="text" class="form-control" name="instagram" value="{{old('instagram')}}"/>
+                @if($errors->has('instagram'))
+                    <span class="text-danger">{{$errors->first('instagram')}}</span>
+                @endif
+            </div>
+        </div>
+        <div class="form-group{{$errors->has('app_digunakan') ? ' has-error':''}}">
+            <label class="col-md-3 col-xs-12 control-label">Aplikasi Yang Digunakan <span class="text-danger">*</span></label>
+            <div class="col-md-6 col-xs-12">                                            
+                <select name="app_digunakan" class="form-control select">
+                    <option value="">--Pilih--</option>
+                    <option value="Strava" @if(old("app_digunakan") == 'Strava') selected @endif>Strava</option>
+                    <option value="Relive" @if(old("app_digunakan") == 'Relive') selected @endif>Relive</option>
+                </select>
+                @if($errors->has('app_digunakan'))
+                    <span class="text-danger">{{$errors->first('app_digunakan')}}</span>
+                @endif
+            </div>
+        </div> 
+        <div class="form-group{{$errors->has('lokasi') ? ' has-error':''}}">
+            <label class="col-md-3 col-xs-12 control-label">Nama Akun Strava / Relive<span class="text-danger">*</span></label>
+            <div class="col-md-6 col-xs-12">                                            
+                <input type="text" class="form-control" name="strava" value="{{old('strava')}}"/>
+                @if($errors->has('strava'))
+                    <span class="text-danger">{{$errors->first('strava')}}</span>
+                @endif
+            </div>
+        </div>
+        <div class="form-group{{$errors->has('kategori_sepeda') ? ' has-error':''}}">
+            <label class="col-md-3 col-xs-12 control-label">Kategori Sepeda <span class="text-danger">*</span></label>
+            <div class="col-md-6 col-xs-12">                                            
+                <select name="kategori_sepeda" class="form-control select">
+                    <option value="">--Pilih--</option>
+                    <option value="Non Listrik" @if(old("kategori_sepeda") == 'Non Listrik') selected @endif>Non Listrik</option>
+                    <option value="Listrik" @if(old("kategori_sepeda") == 'Listrik') selected @endif>Listrik</option>
+                </select>
+                @if($errors->has('kategori_sepeda'))
+                    <span class="text-danger">{{$errors->first('kategori_sepeda')}}</span>
+                @endif
+            </div>
+        </div>
+        <div class="form-group{{$errors->has('jenis_sepeda') ? ' has-error':''}}">
+            <label class="col-md-3 col-xs-12 control-label">Jenis Sepeda<span class="text-danger">*</span></label>
+            <div class="col-md-6 col-xs-12">                                            
+                <select name="jenis_sepeda" class="form-control select">
+                    <option value="">--Pilih--</option>
+                    <option value="MTB / Sepeda Gunung" @if(old("jenis_sepeda") == 'MTB / Sepeda Gunung') selected @endif>MTB / Sepeda Gunung</option>
+                    <option value="Sepeda lipat" @if(old("jenis_sepeda") == 'Sepeda lipat') selected @endif>Sepeda lipat</option>
+                    <option value="Sepeda Balap" @if(old("jenis_sepeda") == 'Sepeda Balap') selected @endif>Sepeda Balap</option>
+                    <option value="BMX" @if(old("jenis_sepeda") == 'BMX') selected @endif>BMX</option>
+                    <option value="Sepeda Hybrid" @if(old("jenis_sepeda") == 'Sepeda Hybrid') selected @endif>Sepeda Hybrid</option>
+                    <option value="Lainnya" @if(old("jenis_sepeda") == 'Lainnya') selected @endif>Lainnya</option>
+                </select>
+                @if($errors->has('kategori_sepeda'))
+                    <span class="text-danger">{{$errors->first('kategori_sepeda')}}</span>
+                @endif
+            </div>
+        </div>
+        <div class="form-group{{$errors->has('komunitas_sepeda') ? ' has-error':''}}">
+            <label class="col-md-3 col-xs-12 control-label">Nama Komunitas Sepeda</label>
+            <div class="col-md-6 col-xs-12">                                            
+                <input type="text" class="form-control" name="komunitas_sepeda" value="{{old('komunitas_sepeda')}}"/>
+                @if($errors->has('komunitas_sepeda'))
+                    <span class="text-danger">{{$errors->first('komunitas_sepeda')}}</span>
+                @endif
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-md-3 col-xs-12 control-label"></label>
+            <div class="col-md-6 col-xs-12">                                            
+                <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> Kirim</button>
+            </div>
+        </div>
+
+    </form>    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="form-horizontal">
+    <div class="form-group">
+        <label class="col-md-3 col-xs-12 control-label">NIK</label>
+        <div class="col-md-6 col-xs-12 text-center">
+            <input type="text" class="form-control" name="nik" id="nik" />
+            <button class="btn btn-primary" id="cek_nik" type="button"><i class="fa fa-search"></i> Cek</button>
+        </div>
+        
+    </div>
+    
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+    <form action="/kirim-hasil-gowes/kirim" class="form-horizontal" method="post" enctype="multipart/form-data">
+    {{csrf_field()}}
+    <div class="form-group{{$errors->has('no_pendaftaran') ? ' has-error':''}}">
+        <label class="col-md-3 col-xs-12 control-label">No.Pendaftaran <span class="text-danger">*</span></label>
+        <div class="col-md-6 col-xs-12">                                            
+            <input type="text" class="form-control" name="no_pendaftaran" value="{{old('no_pendaftaran')}}" id="nodaftar" readonly />
+            <input type="hidden" class="form-control" name="nikinput" value="{{old('nikinput')}}" id="nikinput" />
+            @if($errors->has('no_pendaftaran'))
+                <span class="text-danger">{{$errors->first('no_pendaftaran')}}</span>
+            @endif
+        </div>
+    </div>
+
+    <div class="form-group{{$errors->has('tgl_gowes') ? ' has-error':''}}">
+        <label class="col-md-3 col-xs-12 control-label">Tanggal Gowes<span class="text-danger">*</span></label>
+        <div class="col-md-6 col-xs-12">                                            
+            <input type="date" class="form-control" name="tgl_gowes" value="{{old('tgl_gowes')}}"/>
+            @if($errors->has('tgl_gowes'))
+                <span class="text-danger">{{$errors->first('tgl_gowes')}}</span>
+            @endif
+        </div>
+    </div>
+    <div class="form-group{{$errors->has('jarak_tempuh') ? ' has-error':''}}">
+        <label class="col-md-3 col-xs-12 control-label">Hasil Jarak yang ditempuh (Km)<span class="text-danger">*</span></label>
+        <div class="col-md-6 col-xs-12">                                            
+            <input type="text" class="form-control" name="jarak_tempuh" value="{{old('jarak_tempuh')}}"/>
+            <span style="font-style: italic;">contoh: 17,5 Km</span>
+            @if($errors->has('jarak_tempuh'))
+                <span class="text-danger">{{$errors->first('jarak_tempuh')}}</span>
+            @endif
+        </div>
+    </div>
+
+    <div class="form-group{{$errors->has('hasil_gowes') ? ' has-error':''}}">
+        <label class="col-md-3 col-xs-12 control-label">Screenshoot Hasil Gowes (Dari Aplikasi Strava/Relive)<span class="text-danger">*</span></label>
+        <div class="col-md-6 col-xs-12">                                            
+            <input type="file" name="hasil_gowes" class="form-control" required onchange="readURL(this);"/>
+            <span style="font-style: italic;">Max: 5mb<br>
+                format : jpg/jpeg/png</span><br>
+            <img id="preview_gambar" src="" width="150"/>
+            @if($errors->has('hasil_gowes'))
+                <span class="text-danger">{{$errors->first('hasil_gowes')}}</span>
+            @endif
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-md-3 col-xs-12 control-label"></label>
+        <div class="col-md-6 col-xs-12">                                            
+            <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> Kirim</button>
+        </div>
+    </div>
+
+</form>  
