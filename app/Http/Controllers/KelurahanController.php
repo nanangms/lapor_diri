@@ -119,4 +119,9 @@ class KelurahanController extends Controller
             ->rawColumns(['action','kecamatan'])
             ->make(true);
     }
+
+    public function keldesa($id){
+        $kel = Kelurahan::where('kecamatan_id',$id)->get();
+        return json_encode($kel);
+    }
 }

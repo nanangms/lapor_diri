@@ -9,8 +9,8 @@ class Kelurahan extends Model
     protected $table = 'kelurahan';
     protected $fillable = ['kecamatan_id','nama_kelurahan'];
     
-    public function koperasi(){
-        return $this->hasMany(Koperasi::class);
+    public function lapor_diri(){
+        return $this->hasMany(Lapor_diri::class);
     }
 
     public function permohonan(){

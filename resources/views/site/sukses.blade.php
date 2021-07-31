@@ -17,14 +17,7 @@ Pendaftaran Sukses
 
           <div class="panel">
             <div class="panel-body" >
-              <h2 align="center" class="text-success"><i class="fa fa-check-circle-o"></i> <br>Terima Kasih Telah Mendaftar</h2>
-
-              <h4 align="center">No. Peserta Anda : <br><b>{{$pendaftaran->no_pendaftaran}}</b></h4>
-              <p align="center"><a href="/simpan-no-pendaftaran/{{encrypt($pendaftaran->id)}}" class="btn btn-success"><i class="fa fa-save"></i> Cetak No. Peserta</a></p>
-              <hr>
-              <span>* Simpan dan cetak Nomor Peserta Anda sebagai bukti pendaftaran</span><br><br>
-              <a href="/" class="btn btn-primary"><i class="fa fa-arrow-left"></i> Kembali</a>
-
+              <h2 align="center" class="text-success"><i class="fa fa-check"></i> <br>Terima Kasih Atas Partisipasi Anda</h2>
             </div>
           </div>
         </div>

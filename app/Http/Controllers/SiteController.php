@@ -9,6 +9,10 @@ use \App\Pendaftaran;
 use \App\Hasilgowes;
 use PDF;
 use DB;
+use \App\Kecamatan;
+use \App\Tempat_test;
+use \App\Lapor_diri;
+use Intervention\Image\ImageManagerStatic as Image;
 
 class SiteController extends Controller
 {
@@ -26,127 +30,93 @@ class SiteController extends Controller
 
     public function lapor_diri(){
         $status_form = \App\Formstatus::where('nama_form','pendaftaran')->first();
-        return view('site.lapor_diri',compact(['status_form']));
+        $kecamatan = kecamatan::select('kecamatan.id','kecamatan.nama_kecamatan')->orderBy('id', 'desc')->get();
+        $tempat_test = Tempat_test::orderBy('id', 'asc')->get();
+        return view('site.lapor_diri',compact(['status_form','kecamatan','tempat_test']));
     }
 
+
     //input tambah
-    public function kirim(Request $request){
-        $pendaftaran = Pendaftaran::where('nik',$request->nik)->first();
-        //dd($pendaftaran);
-        if($pendaftaran){
-            return redirect()->back()->with('gagal','NIK Sudah Terdaftar');
-        }
-    	$this->validate($request,[
-    		//identitas pendaftaran
+    public function submit(Request $request){
+        
+        $this->validate($request,[
+            //identitas pendaftaran
             'nama'=>'required',
-            'nik'=>'required|unique:pendaftaran|min:16',
-            'email'=>'required|unique:pendaftaran',
-            'tgl' => 'required', 
-            'bulan' => 'required', 
-            'tahun' => 'required', 
-            'jenis_kelamin' => 'required', 
-            'alamat_lengkap'=>'required',
-            'kota'=>'required',
-            'no_hp'=>'required',
-            'kategori'=>'required',
-            'app_digunakan'=>'required',
-            'instagram'=>'required',
-            'kategori_sepeda'=>'required',
-            'jenis_sepeda'=>'required',
-            'strava'=>'required',
-            'captcha' => 'required|captcha'
+            'nik'=>'required|unique:lapor_diri|min:16',
+            'jenis_kelamin'=>'required',
+            'umur' => 'required', 
+            'kecamatan_id' => 'required', 
+            'kelurahan_id' => 'required', 
+            'pekerjaan' => 'required', 
+            'no_telp' => 'required', 
+            'keluhan_klinis' => 'required', 
+            'penyakit' => 'required', 
+            'riwayat' => 'required', 
+            'permintaan_khusus' => 'required', 
+            'status' => 'required', 
+            'lokasi_isolasi' => 'required', 
+            'saturasi_oksigen' => 'required', 
+            'denyut_nadi' => 'required', 
+            'tekanan_darah' => 'required', 
+            'obat' => 'required', 
+
+            'alamat' => 'required', 
+            'rt'=>'required',
+            //'no_rumah'=>'required',
+
+            'foto_test'=>'required|image|mimes:jpeg,png,jpg,gif|max:5048',
+            'tgl_test'=>'required',
+            'tempat_test'=>'required'
         ]);
 
-        
-        $jml_inbox = jmlPendaftaran();
-		$no = 1;
-		if($jml_inbox > 0) {
-		    $format = $request->kategori."".sprintf("%04s", abs($jml_inbox + 1));
-		}
-		else {
-		    $format = $request->kategori."".sprintf("%04s", sprintf("%03s", $no));
-		}
-        $tgl_lahir = $request->tahun.'-'.$request->bulan.'-'.$request->tgl;
+        $foto_test = $request->file('foto_test');
+        $image_name1 = str_replace(' ', '_', $request->nama).'_'.kode_acak(5).'.'.$foto_test->getClientOriginalExtension();
+        $image_resize = Image::make($foto_test->getRealPath());
+        $image_resize->resize(500, null, function ($constraint) {$constraint->aspectRatio(); });
+        $image_resize->save(public_path('images/foto_test/'.$image_name1));
 
         DB::beginTransaction();
         try{
-            $pendaftaran = new \App\Pendaftaran;
-            $pendaftaran->no_pendaftaran = $format;
-            $pendaftaran->nama = $request->nama;
-            $pendaftaran->nik = $request->nik;
-            $pendaftaran->email = $request->email;
-            $pendaftaran->tgl_lahir = $tgl_lahir;
-            $pendaftaran->jenis_kelamin = $request->jenis_kelamin;
-            $pendaftaran->alamat_lengkap = $request->alamat_lengkap;
-            $pendaftaran->kota = $request->kota;
-            $pendaftaran->no_hp = $request->no_hp;
-            $pendaftaran->kategori = $request->kategori;
-            $pendaftaran->instagram = $request->instagram;
-            $pendaftaran->app_digunakan = $request->app_digunakan;
-            $pendaftaran->strava = $request->strava;
-            $pendaftaran->kategori_sepeda = $request->kategori_sepeda;
-            $pendaftaran->jenis_sepeda = $request->jenis_sepeda;
-            $pendaftaran->komunitas_sepeda = $request->komunitas_sepeda;
-            $pendaftaran->save();
+            $lapor = new \App\Lapor_diri;
+            $lapor->nama            = $request->nama;
+            $lapor->nik             = $request->nik;
+            $lapor->jenis_kelamin   = $request->jenis_kelamin;
+            $lapor->umur            = $request->umur;
+            $lapor->kecamatan_id    = $request->kecamatan_id;
+            $lapor->kelurahan_id    = $request->kelurahan_id;
+            $lapor->alamat          = $request->alamat;
+            $lapor->pekerjaan       = $request->pekerjaan;
+            $lapor->no_telp         = $request->no_telp;
+
+            $lapor->keluhan_klinis    = $request->keluhan_klinis;
+            $lapor->penyakit          = $request->penyakit;
+            $lapor->riwayat           = $request->riwayat;
+            $lapor->permintaan_khusus = $request->permintaan_khusus;
+            $lapor->status            = $request->status;
+            $lapor->lokasi_isolasi    = $request->lokasi_isolasi;
+            $lapor->saturasi_oksigen  = $request->saturasi_oksigen;
+            $lapor->denyut_nadi       = $request->denyut_nadi;
+            $lapor->tekanan_darah     = $request->tekanan_darah;
+            $lapor->obat              = $request->obat;
+
+            $lapor->rt              = $request->rt;
+            $lapor->no_rumah        = $request->no_rumah;
+            $lapor->foto_test       = $image_name1;
+            $lapor->tgl_test        = $request->tgl_test;
+            $lapor->tempat_test     = $request->tempat_test;
+            $lapor->save();
 
             DB::commit();
-            return redirect('/pendaftaran/sukses/'.encrypt($pendaftaran->id))->with('sukses','Pendaftaran berhasil Dikirim');
+            return redirect('/lapor-diri/sukses')->with('sukses','Laporan berhasil Dikirim');
         }catch (\Exception $e){
             DB::rollback();
             return redirect()->back()->with('gagal','Data Gagal Diinput');
         }
     }
 
-    public function sukses($id){
-    	$d = decrypt($id);
-    	$pendaftaran = Pendaftaran::where('id',$d)->first();
-        return view('site.sukses',['pendaftaran' => $pendaftaran]);
-    }
 
-    public function cetak_pendaftaran($id){
-        $d = decrypt($id);
-        $pendaftaran = Pendaftaran::where('id',$d)->first();
-
-        $pdf = PDF::loadView('site.exportpdf',['pendaftaran' => $pendaftaran])->setPaper([0, 0, 450, 400],'lanscape');
-        return $pdf->stream('bukti_pendaftaran_gowesvirtual_'.$pendaftaran->no_pendaftaran.'.pdf');
-    }
-
-    public function cetak_sertifikat(){
-        $banner = \App\Banner::where('status_aktif','Y')->get();
-        return view('site.cetak_sertifikat',['banner' => $banner]);
-    }
-
-    public function download_sertifikat(Request $r){
-        $d = $r->no_peserta;
-        $pendaftaran = Pendaftaran::where('no_pendaftaran',$d)->first();
-        $hasil = Hasilgowes::where('no_pendaftaran',$d)->first();
-
-        if($pendaftaran){
-            if($hasil){
-                $pdf = PDF::loadView('site.v_sertifikat',['pendaftaran' => $pendaftaran])->setPaper('a4','landscape');
-                return $pdf->stream('sertifikat_gowesvirtual_'.$pendaftaran->no_pendaftaran.'.pdf');
-            }else{
-                return redirect()->back()->with('gagal','Anda Belum Melakukan Submit Hasil Gowes');
-            }
-            
-        }else{
-            return redirect()->back()->with('gagal','Nomor Peserta Tidak Terdaftar');
-            // return view('site.cetak_sertifikat',['banner' => $banner]);
-        }
-        
-    }
-
-    public function cetak_no_peserta(Request $r){
-        $no = $r->nik;
-        $pendaftaran = Pendaftaran::where('nik',$no)->first();
-        //dd($pendaftaran);
-        if($pendaftaran == null){
-            return redirect()->back()->with('gagal','NIK Belum Terdaftar');
-        }else{
-            $pdf = PDF::loadView('site.exportpdf',['pendaftaran' => $pendaftaran])->setPaper([0, 0, 450, 400],'lanscape');
-            return $pdf->download('bukti_pendaftaran_gowesvirtual_'.$pendaftaran->no_pendaftaran.'.pdf');
-        }
-        
+    public function sukses(){
+        return view('site.sukses');
     }
 
     public function reloadCaptcha()

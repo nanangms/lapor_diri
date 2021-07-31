@@ -11,7 +11,7 @@
       </a>
     </li>
     <li class="nav-item">
-      <a href="/lapor-diri" class="nav-link @if(Request::segment(1)== 'lapor-diri') active @endif">
+      <a href="/data-lapor-diri" class="nav-link @if(Request::segment(1)== 'data-lapor-diri') active @endif">
         <i class="nav-icon fas fa-edit"></i>
         <p>
           Lapor Diri

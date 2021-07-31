@@ -31,20 +31,20 @@ Dashboard
     <section class="content">
       <div class="container-fluid">
         <!-- Small boxes (Stat box) -->
-        <h3 align="center">Data Pendaftaran</h3>
+        
         <div class="row">
           <div class="col-lg-12 col-3">
             <!-- small box -->
             <div class="small-box bg-success">
               <div class="inner">
-                <h3>222</h3>
+                <h3>{{$jml_data}}</h3>
 
-                <p>Total Pendaftaran</p>
+                <p>Total Lapor Diri</p>
               </div>
               <div class="icon">
                 <i class="ion ion-person"></i>
               </div>
-              <a href="/pendaftaran" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+              <a href="/data-lapor-diri" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
         </div>

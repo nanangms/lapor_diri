@@ -2,7 +2,7 @@
 
 namespace App\Exports;
 
-use App\Pendaftaran;
+use App\Lapor_diri;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\WithHeadings;
@@ -14,53 +14,65 @@ class LaporanExport implements FromCollection, WithMapping, WithHeadings, Should
 {
     public function collection()
     {
-        return Pendaftaran::orderby('id','ASC')->get();
+        return Lapor_diri::with(['kecamatan','kelurahan'])->orderby('id','ASC')->get();
     }
 
-    public function map($pendaftaran): array
+    public function map($lapor_diri): array
     {
     	Date::setLocale('id');
         return [
-            $pendaftaran->no_pendaftaran,
-            $pendaftaran->nama,
-            '('.$pendaftaran->nik.')',
-            $pendaftaran->email,
-            Date::parse($pendaftaran->tgl_lahir)->format('j F Y'),
-            umur($pendaftaran->tgl_lahir),
-            $pendaftaran->jenis_kelamin,
-            $pendaftaran->alamat_lengkap,
-            $pendaftaran->kota,
-            $pendaftaran->no_hp,
-            $pendaftaran->kategori,
-            $pendaftaran->instagram,
-            $pendaftaran->app_digunakan,
-            $pendaftaran->strava,
-            $pendaftaran->kategori_sepeda,
-            $pendaftaran->jenis_sepeda,
-            $pendaftaran->komunitas_sepeda
+            $lapor_diri->nama,
+            '('.$lapor_diri->nik.')',
+            $lapor_diri->umur,
+            $lapor_diri->jenis_kelamin,
+            $lapor_diri->kecamatan->nama_kecamatan,
+            $lapor_diri->kelurahan->nama_kelurahan,
+            $lapor_diri->rt,
+            $lapor_diri->no_rumah,
+            $lapor_diri->alamat,
+            $lapor_diri->no_telp,
+            $lapor_diri->pekerjaan,
+            Date::parse($lapor_diri->tgl_test)->format('j F Y'),
+            $lapor_diri->tempat_test,
+            $lapor_diri->keluhan_klinis,
+            $lapor_diri->penyakit,
+            $lapor_diri->riwayat,
+            $lapor_diri->permintaan_khusus,
+            $lapor_diri->status,
+            $lapor_diri->lokasi_isolasi,
+            $lapor_diri->saturasi_oksigen,
+            $lapor_diri->denyut_nadi,
+            $lapor_diri->tekanan_darah,
+            $lapor_diri->obat
         ];
     }
 
     public function headings(): array
     {
         return [
-            'NO PENDAFTARAN',
             'NAMA',
             'NIK',
-            'EMAIL',
-            'TANGGAL LAHIR',
             'UMUR',
             'JENIS KELAMIN',
-            'ALAMAT LENGKAP',
-            'KOTA',
-            'NO. HP/WA',
-            'KATEGORI',
-            'INSTAGRAM',
-            'APP YG DIGUNAKAN',
-            'NAMA AKUN STRAVA/RELIVE',
-            'KATEGORI SEPEDA',
-            'JENIS SEPEDA',
-            'KOMUNITAS SEPEDA'
+            'KECAMATAN',
+            'KELURAHAN',
+            'RT',
+            'No. RUMAH',
+            'ALAMAT',
+            'NO. HP',
+            'PEKERJAAN',
+            'TANGGAL TEST',
+            'TEMPAT TEST',
+            'KELUHAN KLINIS',
+            'PENYAKIT YANG PERNAH DIDERITA',
+            'RIWAYAT/SUMBER KONTAK KASUS',
+            'PERMINTAAN KHUSUS',
+            'STATUS',
+            'LOKASI ISOLASI',
+            'SATURASI OKSIGEN',
+            'DENYUT NADI',
+            'TEKANAN DARAH',
+            'OBAT YANG DIKONSUMSI'
 
         ];
     }
